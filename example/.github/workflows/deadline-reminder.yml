@@ -1,0 +1,49 @@
+name: Flutter Deadline
+
+on:
+  schedule:
+    # Run daily at 9:00 AM JST (0:00 UTC)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  check-deadlines:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for git blame to work
+
+      - name: Check Deadlines
+        uses: your-username/flutter_deadline/action@v1
+        with:
+          # Slack webhook URL (store in repository secrets)
+          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+          # Language for notifications: 'ja' (Japanese) or 'en' (English)
+          language: 'ja'
+
+          # Start notifying 7 days before deadline
+          notify_days_before: 7
+
+          # Also notify for past deadlines
+          notify_past_deadlines: true
+
+          # Default branch for GitHub links
+          default_branch: 'main'
+
+          # Directory to scan (default: root)
+          scan_directory: 'lib'
+
+          # Map GitHub usernames to Slack user IDs
+          github_to_slack_map: |
+            {
+              "your-github-username": "U12345678",
+              "another-developer": "U87654321"
+            }
+
+      - name: Output Results
+        run: |
+          echo "Total annotations: ${{ steps.check-deadlines.outputs.total_annotations }}"
+          echo "Filtered annotations: ${{ steps.check-deadlines.outputs.filtered_annotations }}"

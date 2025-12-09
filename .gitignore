@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.dart_tool/
+.packages
+
+# Build outputs
+build/
+dist/
+*.js.map
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dart/Flutter
+pubspec.lock
+*.dart.js
+*.js_
+*.js.deps
+*.js.map
+
+# Coverage
+coverage/
+.lcov
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+
+# Test outputs
+.test_coverage/

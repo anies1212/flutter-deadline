@@ -1,0 +1,59 @@
+name: 'Flutter Deadline'
+description: 'Scan Dart/Flutter code for @Deadline annotations and send Slack notifications'
+author: 'Your Name'
+
+branding:
+  icon: 'clock'
+  color: 'orange'
+
+inputs:
+  slack_webhook_url:
+    description: 'Slack Incoming Webhook URL for sending notifications'
+    required: false
+  slack_bot_token:
+    description: 'Slack Bot Token (alternative to webhook)'
+    required: false
+  slack_channel:
+    description: 'Slack channel to send notifications to (required if using bot token)'
+    required: false
+  language:
+    description: 'Language for notifications: "ja" (Japanese) or "en" (English)'
+    required: false
+    default: 'en'
+  custom_template:
+    description: 'Custom Slack message template (optional). Use placeholders like {{elementName}}, {{filePath}}, {{lineNumber}}, {{deadline}}, {{author}}, {{description}}, {{codeBlock}}, {{githubUrl}}, {{daysDiff}}, {{mention}}'
+    required: false
+  repository:
+    description: 'GitHub repository (owner/repo). Defaults to current repository'
+    required: false
+  default_branch:
+    description: 'Default branch name for GitHub links'
+    required: false
+    default: 'main'
+  scan_directory:
+    description: 'Directory to scan for Dart files'
+    required: false
+    default: '.'
+  notify_days_before:
+    description: 'Number of days before deadline to start sending notifications (0 = on deadline day only)'
+    required: false
+    default: '0'
+  notify_past_deadlines:
+    description: 'Whether to notify for past deadlines'
+    required: false
+    default: 'true'
+  github_to_slack_map:
+    description: 'JSON object or comma-separated key=value pairs mapping GitHub usernames/emails to Slack user IDs. Example: {"octocat": "U12345678"} or octocat=U12345678,other=U87654321'
+    required: false
+
+outputs:
+  total_annotations:
+    description: 'Total number of @Deadline annotations found in the codebase'
+  filtered_annotations:
+    description: 'Number of annotations that match the notification criteria'
+  annotations_json:
+    description: 'JSON array of filtered annotations with details'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
