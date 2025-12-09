@@ -160,11 +160,6 @@ function buildAnnotationBlocks(
 
   const mention = resolveSlackMention(annotation, config);
 
-  // Truncate code block to avoid Slack's text limit (3000 chars for section)
-  const truncatedCode = annotation.codeBlock.length > 500
-    ? annotation.codeBlock.slice(0, 500) + '\n// ... (truncated)'
-    : annotation.codeBlock;
-
   const blocks: SlackBlock[] = [
     {
       type: 'section',
@@ -178,22 +173,14 @@ function buildAnnotationBlocks(
       text: {
         type: 'mrkdwn',
         text: [
-          `*${msg.element}:* \`${annotation.elementName}\``,
-          `*${msg.file}:* <${githubUrl}|${annotation.filePath}> (${msg.line}: ${annotation.lineNumber})`,
+          `*${msg.element}:* ${annotation.elementName}`,
+          `*${msg.file}:* ${annotation.filePath} (${msg.line}: ${annotation.lineNumber})`,
           `*${msg.deadline}:* ${formatDate(annotation.deadlineDate)}`,
           annotation.author ? `*${msg.author}:* ${annotation.author}` : null,
           annotation.description ? `*${msg.description}:* ${annotation.description}` : null,
-          `<${githubUrl}|${msg.viewCode}>`,
         ]
           .filter(Boolean)
           .join('\n'),
-      },
-    },
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `\`\`\`${truncatedCode}\`\`\``,
       },
     },
     {
