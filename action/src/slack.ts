@@ -160,6 +160,14 @@ function buildAnnotationBlocks(
 
   const mention = resolveSlackMention(annotation, config);
 
+  // Build author link (GitHub profile)
+  const authorLink = annotation.author
+    ? `<https://github.com/${annotation.author}|${annotation.author}>`
+    : 'Unknown';
+
+  // Build file link (GitHub code)
+  const fileLink = `<${githubUrl}|${annotation.filePath}>`;
+
   const blocks: SlackBlock[] = [
     {
       type: 'section',
@@ -170,19 +178,41 @@ function buildAnnotationBlocks(
     },
     {
       type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: [
-          `*${msg.element}:* ${annotation.elementName}`,
-          `*${msg.file}:* ${annotation.filePath} (${msg.line}: ${annotation.lineNumber})`,
-          `*${msg.deadline}:* ${formatDate(annotation.deadlineDate)}`,
-          annotation.author ? `*${msg.author}:* ${annotation.author}` : null,
-          annotation.description ? `*${msg.description}:* ${annotation.description}` : null,
+      fields: [
+        {
+          type: 'mrkdwn',
+          text: `*${msg.element}:*\n${annotation.elementName}`,
+        },
+        {
+          type: 'mrkdwn',
+          text: `*${msg.deadline}:*\n${formatDate(annotation.deadlineDate)}`,
+        },
+      ],
+    } as SlackBlock,
+    {
+      type: 'section',
+      fields: [
+        {
+          type: 'mrkdwn',
+          text: `*${msg.file}:*\n${fileLink} (${msg.line}: ${annotation.lineNumber})`,
+        },
+        {
+          type: 'mrkdwn',
+          text: `*${msg.author}:*\n${authorLink}`,
+        },
+      ],
+    } as SlackBlock,
+    ...(annotation.description
+      ? [
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `*${msg.description}:* ${annotation.description}`,
+            },
+          } as SlackBlock,
         ]
-          .filter(Boolean)
-          .join('\n'),
-      },
-    },
+      : []),
     {
       type: 'divider',
     },
