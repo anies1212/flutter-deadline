@@ -27,20 +27,21 @@ jobs:
           npm install
           npm run build
 
-      - name: Run E2E Test (Japanese)
+      - name: Run E2E Test (Japanese) - Send to Slack
         id: e2e_ja
         uses: ./action
         with:
+          slack_webhook_url: ${{ secrets.TEST_SLACK_WEBHOOK_URL }}
           language: 'ja'
           scan_directory: 'test_fixtures'
           notify_past_deadlines: true
           default_branch: 'main'
-          # No slack_webhook_url - will output results without sending
 
-      - name: Run E2E Test (English)
+      - name: Run E2E Test (English) - Send to Slack
         id: e2e_en
         uses: ./action
         with:
+          slack_webhook_url: ${{ secrets.TEST_SLACK_WEBHOOK_URL }}
           language: 'en'
           scan_directory: 'test_fixtures'
           notify_past_deadlines: true
@@ -60,136 +61,6 @@ jobs:
           echo "=============================================="
           echo '${{ steps.e2e_ja.outputs.annotations_json }}' | jq '.' || echo '${{ steps.e2e_ja.outputs.annotations_json }}'
 
-      - name: Generate Slack Preview (Japanese)
-        run: |
-          echo ""
-          echo "=============================================="
-          echo "🇯🇵 Slack Preview (Japanese)"
-          echo "=============================================="
-          echo ""
-
-          cat << 'PREVIEW'
-          ┌────────────────────────────────────────────────────────────────┐
-          │  ⚠️ デッドライン通知                                            │
-          │  12 件のデッドラインが見つかりました                              │
-          ├────────────────────────────────────────────────────────────────┤
-          │                                                                │
-          │  🚨 デッドラインを過ぎています (約1年超過) @tech-debt            │
-          │  ────────────────────────────────────────────────────────────  │
-          │  対象: veryOldDeadline                                         │
-          │  ファイル: test_fixtures/sample_deadlines.dart (行: 148)        │
-          │  デッドライン: 2024-01-01                                       │
-          │  説明: This has been overdue for a year!                       │
-          │                                                                │
-          │  ```dart                                                       │
-          │  void veryOldDeadline() {                                      │
-          │    // This should have been removed long ago                   │
-          │  }                                                             │
-          │  ```                                                           │
-          │                                                    [コードを見る] │
-          ├────────────────────────────────────────────────────────────────┤
-          │                                                                │
-          │  🚨 デッドラインを過ぎています @channel                          │
-          │  ────────────────────────────────────────────────────────────  │
-          │  対象: LegacyAuthService                                       │
-          │  ファイル: test_fixtures/sample_deadlines.dart (行: 10)         │
-          │  デッドライン: 2025-01-01                                       │
-          │  説明: New Year cleanup - remove legacy authentication         │
-          │                                                                │
-          │  ```dart                                                       │
-          │  class LegacyAuthService {                                     │
-          │    Future<bool> authenticate(String username, ...) async {    │
-          │      // Old authentication logic                               │
-          │      return false;                                             │
-          │    }                                                           │
-          │  }                                                             │
-          │  ```                                                           │
-          │                                                    [コードを見る] │
-          ├────────────────────────────────────────────────────────────────┤
-          │                                                                │
-          │  ⏰ デッドラインに達しました                                     │
-          │  ────────────────────────────────────────────────────────────  │
-          │  対象: debugLogger                                             │
-          │  ファイル: test_fixtures/sample_deadlines.dart (行: 27)         │
-          │  デッドライン: 2025-12-09                                       │
-          │  説明: Remove temporary logging after debugging                │
-          │                                                                │
-          │  ```dart                                                       │
-          │  void debugLogger(String message) {                            │
-          │    print('[DEBUG] $message');                                  │
-          │  }                                                             │
-          │  ```                                                           │
-          │                                                    [コードを見る] │
-          ├────────────────────────────────────────────────────────────────┤
-          │  ... (他のデッドラインも同様に表示)                              │
-          └────────────────────────────────────────────────────────────────┘
-          PREVIEW
-
-      - name: Generate Slack Preview (English)
-        run: |
-          echo ""
-          echo "=============================================="
-          echo "🇺🇸 Slack Preview (English)"
-          echo "=============================================="
-          echo ""
-
-          cat << 'PREVIEW'
-          ┌────────────────────────────────────────────────────────────────┐
-          │  ⚠️ Deadline Reminder                                          │
-          │  12 deadline(s) found                                          │
-          ├────────────────────────────────────────────────────────────────┤
-          │                                                                │
-          │  🚨 Deadline passed (~1 year overdue) @tech-debt               │
-          │  ────────────────────────────────────────────────────────────  │
-          │  Element: veryOldDeadline                                      │
-          │  File: test_fixtures/sample_deadlines.dart (Line: 148)         │
-          │  Deadline: 2024-01-01                                          │
-          │  Description: This has been overdue for a year!                │
-          │                                                                │
-          │  ```dart                                                       │
-          │  void veryOldDeadline() {                                      │
-          │    // This should have been removed long ago                   │
-          │  }                                                             │
-          │  ```                                                           │
-          │                                                     [View Code] │
-          ├────────────────────────────────────────────────────────────────┤
-          │                                                                │
-          │  🚨 Deadline passed @channel                                   │
-          │  ────────────────────────────────────────────────────────────  │
-          │  Element: LegacyAuthService                                    │
-          │  File: test_fixtures/sample_deadlines.dart (Line: 10)          │
-          │  Deadline: 2025-01-01                                          │
-          │  Description: New Year cleanup - remove legacy authentication  │
-          │                                                                │
-          │  ```dart                                                       │
-          │  class LegacyAuthService {                                     │
-          │    Future<bool> authenticate(String username, ...) async {    │
-          │      // Old authentication logic                               │
-          │      return false;                                             │
-          │    }                                                           │
-          │  }                                                             │
-          │  ```                                                           │
-          │                                                     [View Code] │
-          ├────────────────────────────────────────────────────────────────┤
-          │                                                                │
-          │  ⏰ Deadline reached                                            │
-          │  ────────────────────────────────────────────────────────────  │
-          │  Element: debugLogger                                          │
-          │  File: test_fixtures/sample_deadlines.dart (Line: 27)          │
-          │  Deadline: 2025-12-09                                          │
-          │  Description: Remove temporary logging after debugging         │
-          │                                                                │
-          │  ```dart                                                       │
-          │  void debugLogger(String message) {                            │
-          │    print('[DEBUG] $message');                                  │
-          │  }                                                             │
-          │  ```                                                           │
-          │                                                     [View Code] │
-          ├────────────────────────────────────────────────────────────────┤
-          │  ... (more deadlines displayed similarly)                      │
-          └────────────────────────────────────────────────────────────────┘
-          PREVIEW
-
       - name: Summary
         run: |
           echo ""
@@ -201,8 +72,7 @@ jobs:
           echo "  1. Scanned test_fixtures/ directory"
           echo "  2. Found ${{ steps.e2e_ja.outputs.total_annotations }} @Deadline annotations"
           echo "  3. Filtered to ${{ steps.e2e_ja.outputs.filtered_annotations }} annotations matching criteria"
-          echo "  4. Would send Slack notification (skipped - no webhook configured)"
+          echo "  4. Sent Slack notification (Japanese)"
+          echo "  5. Sent Slack notification (English)"
           echo ""
-          echo "To test with actual Slack notifications:"
-          echo "  1. Add SLACK_WEBHOOK_URL to repository secrets"
-          echo "  2. Add 'slack_webhook_url: \${{ secrets.SLACK_WEBHOOK_URL }}' to the action inputs"
+          echo "Check your Slack channel for the notifications!"
