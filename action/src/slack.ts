@@ -179,7 +179,7 @@ function buildAnnotationBlocks(
         type: 'mrkdwn',
         text: [
           `*${msg.element}:* \`${annotation.elementName}\``,
-          `*${msg.file}:* <${githubUrl}|\`${annotation.filePath}\`> (${msg.line}: ${annotation.lineNumber})`,
+          `*${msg.file}:* <${githubUrl}|${annotation.filePath}> (${msg.line}: ${annotation.lineNumber})`,
           `*${msg.deadline}:* ${formatDate(annotation.deadlineDate)}`,
           annotation.author ? `*${msg.author}:* ${annotation.author}` : null,
           annotation.description ? `*${msg.description}:* ${annotation.description}` : null,

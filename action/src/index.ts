@@ -78,10 +78,18 @@ async function run(): Promise<void> {
     // Parse all files for @Deadline annotations
     let allAnnotations: DeadlineAnnotation[] = [];
     let totalErrors = 0;
+    const cwd = process.cwd();
 
     for (const filePath of dartFiles) {
       const result = parseDartFile(filePath);
-      allAnnotations = allAnnotations.concat(result.annotations);
+
+      // Convert absolute paths to relative paths for GitHub URLs
+      const annotationsWithRelativePaths = result.annotations.map((annotation) => ({
+        ...annotation,
+        filePath: path.relative(cwd, annotation.filePath),
+      }));
+
+      allAnnotations = allAnnotations.concat(annotationsWithRelativePaths);
       totalErrors += result.errors.length;
 
       for (const error of result.errors) {
