@@ -26,7 +26,7 @@ Or install from GitHub:
 dependencies:
   flutter_deadline:
     git:
-      url: https://github.com/your-username/flutter_deadline.git
+      url: https://github.com/anies1212/flutter-deadline.git
       path: flutter_deadline
 ```
 
@@ -54,7 +54,7 @@ jobs:
           fetch-depth: 0  # Required for git blame
 
       - name: Check Deadlines
-        uses: your-username/flutter_deadline/action@v1
+        uses: anies1212/flutter-deadline/action@v1
         with:
           slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
           language: 'ja'  # or 'en'
@@ -65,7 +65,7 @@ jobs:
 
 ```yaml
       - name: Check Deadlines
-        uses: your-username/flutter_deadline/action@v1
+        uses: anies1212/flutter-deadline/action@v1
         with:
           slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
           slack_channel: 'C0A38Q2ML56'  # Channel ID
@@ -162,31 +162,39 @@ You can annotate:
 ### Japanese (language: 'ja')
 
 ```
-⚠️ デッドライン通知
-
+デッドライン通知
+12 件のデッドラインが見つかりました
+─────────────────────────────
 🚨 デッドラインを過ぎています (3 日超過) @user
-対象: temporaryWorkaround
-ファイル: lib/src/utils.dart (行: 42)
-デッドライン: 2024-12-31
-作成者: John Doe
-説明: Remove after API v2 migration is complete
 
-[コードを見る]
+対象:                    デッドライン:
+temporaryWorkaround      2024-12-31
+
+ファイル:                作成者:
+lib/src/utils.dart       John Doe
+(行: 42)
+
+説明: Remove after API v2 migration is complete
+─────────────────────────────
 ```
 
 ### English (language: 'en')
 
 ```
-⚠️ Deadline Reminder
-
+Deadline Reminder
+12 deadline(s) found
+─────────────────────────────
 🚨 Deadline passed (3 day(s) overdue) @user
-Element: temporaryWorkaround
-File: lib/src/utils.dart (Line: 42)
-Deadline: 2024-12-31
-Author: John Doe
-Description: Remove after API v2 migration is complete
 
-[View Code]
+Element:                 Deadline:
+temporaryWorkaround      2024-12-31
+
+File:                    Author:
+lib/src/utils.dart       John Doe
+(Line: 42)
+
+Description: Remove after API v2 migration is complete
+─────────────────────────────
 ```
 
 ## Custom Template
