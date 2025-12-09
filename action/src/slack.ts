@@ -246,6 +246,9 @@ export function buildSlackMessage(
     };
   }
 
+  const MAX_BLOCKS = 30;
+  const HEADER_BLOCKS = 3; // header, summary, divider
+
   const blocks: SlackBlock[] = [
     {
       type: 'header' as const,
@@ -267,8 +270,33 @@ export function buildSlackMessage(
     } as SlackBlock,
   ];
 
+  let displayedCount = 0;
   for (const annotation of annotations) {
-    blocks.push(...buildAnnotationBlocks(annotation, config, today));
+    const annotationBlocks = buildAnnotationBlocks(annotation, config, today);
+
+    // Check if adding these blocks would exceed the limit
+    if (blocks.length + annotationBlocks.length > MAX_BLOCKS) {
+      break;
+    }
+
+    blocks.push(...annotationBlocks);
+    displayedCount++;
+  }
+
+  // Add truncation notice if not all annotations were displayed
+  if (displayedCount < annotations.length) {
+    const remainingCount = annotations.length - displayedCount;
+    const truncationMsg = config.language === 'ja'
+      ? `...他 ${remainingCount} 件のデッドラインがあります`
+      : `...and ${remainingCount} more deadline(s)`;
+
+    blocks.push({
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: truncationMsg,
+      },
+    });
   }
 
   return {
