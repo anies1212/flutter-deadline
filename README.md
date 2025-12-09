@@ -34,6 +34,8 @@ dependencies:
 
 Create `.github/workflows/flutter-deadline.yml`:
 
+#### Option A: Using Webhook URL (Recommended)
+
 ```yaml
 name: Flutter Deadline
 
@@ -57,9 +59,21 @@ jobs:
           slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
           language: 'ja'  # or 'en'
           notify_past_deadlines: true
-          github_to_slack_map: |
-            {"octocat": "U12345678", "developer": "U87654321"}
 ```
+
+#### Option B: Using Bot Token
+
+```yaml
+      - name: Check Deadlines
+        uses: your-username/flutter_deadline/action@v1
+        with:
+          slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack_channel: 'C0A38Q2ML56'  # Channel ID
+          language: 'ja'
+          notify_past_deadlines: true
+```
+
+> **Note:** Bot Token requires `chat:write` scope. Channel ID can be found in Slack channel details.
 
 ## Usage
 

@@ -8,6 +8,7 @@ import {
   buildSlackMessage,
   buildCustomSlackMessage,
   sendSlackWebhook,
+  sendSlackBotMessage,
   filterAnnotationsByDate,
 } from './slack';
 
@@ -120,17 +121,23 @@ async function run(): Promise<void> {
 
     // Send Slack notification if there are annotations to report
     if (filteredAnnotations.length > 0) {
+      const message = config.customTemplate
+        ? buildCustomSlackMessage(filteredAnnotations, config, today)
+        : buildSlackMessage(filteredAnnotations, config, today);
+
       if (config.slackWebhookUrl) {
+        // Use Webhook URL
         core.info('Sending Slack notification via webhook...');
-
-        const message = config.customTemplate
-          ? buildCustomSlackMessage(filteredAnnotations, config, today)
-          : buildSlackMessage(filteredAnnotations, config, today);
-
         await sendSlackWebhook(config.slackWebhookUrl, message);
-        core.info('Slack notification sent successfully');
+        core.info('Slack notification sent successfully via webhook');
+      } else if (config.slackBotToken && config.slackChannel) {
+        // Use Bot Token
+        core.info(`Sending Slack notification via Bot Token to channel: ${config.slackChannel}...`);
+        await sendSlackBotMessage(config.slackBotToken, config.slackChannel, message);
+        core.info('Slack notification sent successfully via Bot Token');
       } else {
-        core.warning('No Slack webhook URL provided. Skipping notification.');
+        core.warning('No Slack credentials provided. Skipping notification.');
+        core.warning('Provide either slack_webhook_url OR (slack_bot_token AND slack_channel)');
         core.info('Annotations found:');
         for (const annotation of filteredAnnotations) {
           core.info(

@@ -342,6 +342,38 @@ export async function sendSlackWebhook(webhookUrl: string, message: SlackMessage
 }
 
 /**
+ * Send a Slack message using Bot Token (chat.postMessage API)
+ */
+export async function sendSlackBotMessage(
+  botToken: string,
+  channel: string,
+  message: SlackMessage
+): Promise<void> {
+  const response = await fetch('https://slack.com/api/chat.postMessage', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${botToken}`,
+    },
+    body: JSON.stringify({
+      channel,
+      text: message.text,
+      blocks: message.blocks,
+    }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Slack API request failed: ${response.status} ${text}`);
+  }
+
+  const data = await response.json() as { ok: boolean; error?: string };
+  if (!data.ok) {
+    throw new Error(`Slack API error: ${data.error}`);
+  }
+}
+
+/**
  * Filter annotations based on date criteria
  */
 export function filterAnnotationsByDate(
