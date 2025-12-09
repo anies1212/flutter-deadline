@@ -190,6 +190,48 @@ function getLineNumber(content: string, index: number): number {
 }
 
 /**
+ * Check if a position is inside a comment
+ * Handles single-line comments (//, ///) and block comments
+ */
+function isInsideComment(content: string, index: number): boolean {
+  // Check for block comments
+  let inBlockComment = false;
+  let i = 0;
+  while (i < index) {
+    if (!inBlockComment && content.slice(i, i + 2) === '/*') {
+      inBlockComment = true;
+      i += 2;
+      continue;
+    }
+    if (inBlockComment && content.slice(i, i + 2) === '*/') {
+      inBlockComment = false;
+      i += 2;
+      continue;
+    }
+    i++;
+  }
+  if (inBlockComment) {
+    return true;
+  }
+
+  // Check for single-line comments (// or ///)
+  // Find the start of the current line
+  let lineStart = index;
+  while (lineStart > 0 && content[lineStart - 1] !== '\n') {
+    lineStart--;
+  }
+
+  // Check if there's a // before our position on the same line
+  const lineBeforeIndex = content.slice(lineStart, index);
+  const singleLineCommentMatch = lineBeforeIndex.match(/\/\//);
+  if (singleLineCommentMatch) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Parse a single Dart file for @Deadline annotations
  */
 export function parseDartFile(filePath: string): ParseResult {
@@ -215,6 +257,11 @@ export function parseDartFile(filePath: string): ParseResult {
       const annotationContent = match[1];
       const annotationIndex = match.index;
       const annotationEndIndex = annotationIndex + match[0].length;
+
+      // Skip annotations inside comments
+      if (isInsideComment(content, annotationIndex)) {
+        continue;
+      }
 
       // Parse required parameters
       const yearStr = parseNamedParameter(annotationContent, 'year');

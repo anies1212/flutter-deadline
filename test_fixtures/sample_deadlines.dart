@@ -191,3 +191,36 @@ class OldApiClient {
     // 古い実装
   }
 }
+
+// =============================================================================
+// Pattern 13: Commented out annotations (should be IGNORED)
+// =============================================================================
+
+// Single line comment - should be ignored:
+// @Deadline(year: 2025, month: 1, day: 1, description: 'This should be ignored')
+
+/// Doc comment - should be ignored:
+/// @Deadline(year: 2025, month: 1, day: 2, description: 'This should also be ignored')
+
+/*
+ * Block comment - should be ignored:
+ * @Deadline(
+ *   year: 2025,
+ *   month: 1,
+ *   day: 3,
+ *   description: 'This should definitely be ignored',
+ * )
+ */
+
+/* Inline block comment @Deadline(year: 2025, month: 1, day: 4) should be ignored */
+
+// This real annotation should be detected:
+@Deadline(
+  year: 2025,
+  month: 6,
+  day: 1,
+  description: 'This is a real annotation after comments',
+)
+void realAnnotationAfterComments() {
+  // implementation
+}
