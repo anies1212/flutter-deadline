@@ -56,7 +56,6 @@ jobs:
         with:
           slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
           language: 'ja'  # or 'en'
-          notify_days_before: 7
           notify_past_deadlines: true
           github_to_slack_map: |
             {"octocat": "U12345678", "developer": "U87654321"}

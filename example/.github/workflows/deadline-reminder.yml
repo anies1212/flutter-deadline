@@ -24,9 +24,6 @@ jobs:
           # Language for notifications: 'ja' (Japanese) or 'en' (English)
           language: 'ja'
 
-          # Start notifying 7 days before deadline
-          notify_days_before: 7
-
           # Also notify for past deadlines
           notify_past_deadlines: true
 
