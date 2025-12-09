@@ -179,29 +179,16 @@ function buildAnnotationBlocks(
         type: 'mrkdwn',
         text: [
           `*${msg.element}:* \`${annotation.elementName}\``,
-          `*${msg.file}:* \`${annotation.filePath}\` (${msg.line}: ${annotation.lineNumber})`,
+          `*${msg.file}:* <${githubUrl}|\`${annotation.filePath}\`> (${msg.line}: ${annotation.lineNumber})`,
           `*${msg.deadline}:* ${formatDate(annotation.deadlineDate)}`,
           annotation.author ? `*${msg.author}:* ${annotation.author}` : null,
           annotation.description ? `*${msg.description}:* ${annotation.description}` : null,
+          `<${githubUrl}|${msg.viewCode}>`,
         ]
           .filter(Boolean)
           .join('\n'),
       },
     },
-    {
-      type: 'actions',
-      elements: [
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: msg.viewCode,
-          },
-          url: githubUrl,
-          action_id: `view_code_${annotation.lineNumber}`,
-        },
-      ],
-    } as SlackBlock,
     {
       type: 'section',
       text: {
@@ -211,7 +198,7 @@ function buildAnnotationBlocks(
     },
     {
       type: 'divider',
-    } as SlackBlock,
+    },
   ];
 
   return blocks;
