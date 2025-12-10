@@ -54,7 +54,7 @@ jobs:
           fetch-depth: 0  # Required for git blame
 
       - name: Check Deadlines
-        uses: anies1212/flutter-deadline/action@v1
+        uses: anies1212/flutter-deadline@v1
         with:
           slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
           language: 'ja'  # or 'en'
@@ -65,7 +65,7 @@ jobs:
 
 ```yaml
       - name: Check Deadlines
-        uses: anies1212/flutter-deadline/action@v1
+        uses: anies1212/flutter-deadline@v1
         with:
           slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
           slack_channel: 'C0A38Q2ML56'  # Channel ID

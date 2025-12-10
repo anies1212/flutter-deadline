@@ -57,3 +57,6 @@ outputs:
 runs:
   using: 'node20'
   main: 'dist/index.js'
+
+# Note: If using from repository root (anies1212/flutter-deadline@v1),
+# use the action.yml in the repository root instead.

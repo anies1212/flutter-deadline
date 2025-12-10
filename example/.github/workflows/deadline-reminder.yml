@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0  # Required for git blame to work
 
       - name: Check Deadlines
-        uses: your-username/flutter_deadline/action@v1
+        uses: anies1212/flutter-deadline@v1
         with:
           # Slack webhook URL (store in repository secrets)
           slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
