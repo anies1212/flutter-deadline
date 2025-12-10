@@ -30319,6 +30319,32 @@ function extractCodeBlock(content, annotationEndIndex) {
         codeBlock = extractBalancedBraces(codeStart, enumMatch.index || 0);
         return { codeBlock: truncateCodeBlock(codeBlock), elementName };
     }
+    // Match enum case/value (e.g., "earlyLeave(Flag.release(...))" or "value,")
+    const enumCaseMatch = codeStart.match(/^(\w+)\s*(?:\([^)]*\))?\s*[,;)]/);
+    if (enumCaseMatch) {
+        elementName = enumCaseMatch[1];
+        // Find the end of this enum case (comma, semicolon, or closing paren for the last case)
+        let depth = 0;
+        let endIndex = 0;
+        for (let i = 0; i < codeStart.length; i++) {
+            const char = codeStart[i];
+            if (char === '(')
+                depth++;
+            else if (char === ')') {
+                depth--;
+                if (depth < 0) {
+                    endIndex = i;
+                    break;
+                }
+            }
+            else if ((char === ',' || char === ';') && depth === 0) {
+                endIndex = i + 1;
+                break;
+            }
+        }
+        codeBlock = codeStart.slice(0, endIndex || enumCaseMatch[0].length);
+        return { codeBlock: truncateCodeBlock(codeBlock), elementName };
+    }
     // Match function/method declaration
     const funcMatch = codeStart.match(/^((?:static\s+)?(?:Future<[^>]+>|Stream<[^>]+>|void|int|double|bool|String|dynamic|var|final|const|[\w<>,\s]+)\s+(?:get\s+)?(\w+)\s*(?:<[^>]+>)?\s*\([^)]*\)[^{;]*)/);
     if (funcMatch) {
