@@ -5,7 +5,9 @@ node_modules/
 
 # Build outputs
 build/
+# dist/ is needed for GitHub Action - don't ignore action/dist/
 dist/
+!action/dist/
 *.js.map
 
 # IDE
