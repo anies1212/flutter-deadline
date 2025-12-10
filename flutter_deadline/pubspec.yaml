@@ -1,8 +1,14 @@
 name: flutter_deadline
 description: "Provides the @Deadline annotation to mark code that should be removed or refactored by a specific date. Works with flutter_deadline GitHub Action for Slack notifications."
-version: 1.0.0
-repository: https://github.com/your-username/flutter_deadline
-issue_tracker: https://github.com/your-username/flutter_deadline/issues
+version: 1.0.1
+homepage: https://github.com/anies1212/flutter-deadline
+repository: https://github.com/anies1212/flutter-deadline
+issue_tracker: https://github.com/anies1212/flutter-deadline/issues
+topics:
+  - annotation
+  - deadline
+  - reminder
+  - flutter
 
 environment:
   sdk: ^3.0.0
