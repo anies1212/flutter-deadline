@@ -1,3 +1,8 @@
+## 1.0.3
+
+- Fix GitHub Action path configuration
+- Update documentation with correct action usage
+
 ## 1.0.1
 
 - Initial release
